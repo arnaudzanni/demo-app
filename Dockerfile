@@ -1,19 +1,28 @@
-FROM node:8
+# First stage: Build dependencies
+FROM node:8-alpine AS builder
 
-# Create app directory
+# Set working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Install dependencies
 COPY package*.json ./
-
 RUN npm install
-# If you are building your code for production
-# RUN npm install --only=production
 
-# Bundle app source
+# Copy the application code
 COPY . .
 
+# Second stage: Final runtime image
+FROM node:8-alpine
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy only the needed files from the builder stage
+COPY --from=builder /usr/src/app .
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Expose the port and set the entry point
 EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]
