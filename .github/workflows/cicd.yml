@@ -6,39 +6,32 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Log in to Azure Container Registry
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-        username: ${{ secrets.ACR_NAME }}
-        password: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Build and Push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:latest
-
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Deploy to Azure Container Apps
-      run: |
-        az containerapp update \
-          --name hello-world-app \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/hello-world:latest \
-          --environment ${{ secrets.CONTAINER_APP_ENV }}
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+          
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+        - name: 'Build and push image'
+          uses: azure/login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.ACR_NAME }}
+            password: ${{ secrets.AZURE_CREDENTIALS }}
+        - run: |
+            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
+    
+        - name: Deploy to Azure Container Apps
+          run: |
+            az containerapp update \
+              --name hello-world-app \
+              --resource-group ${{ secrets.RESOURCE_GROUP }} \
+              --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
+              --environment ${{ secrets.CONTAINER_APP_ENV }}
