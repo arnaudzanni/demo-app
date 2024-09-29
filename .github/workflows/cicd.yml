@@ -22,8 +22,8 @@ jobs:
           uses: azure/login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.ACR_NAME }}
-            password: ${{ secrets.AZURE_CREDENTIALS }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
