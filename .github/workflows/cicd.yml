@@ -42,7 +42,7 @@ jobs:
           az containerapp create \
             --name demo-app \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --environment $ENVIRONMENT \
+            --environment planetscore-containerapp-env \
             --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
             --target-port 8080 \
             --ingress external \
