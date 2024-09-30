@@ -1,43 +1,63 @@
-name: Build and Deploy to Azure Container Apps
+name: Build and Deploy to Azure Container Apps 
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-        # checkout the repo
-        - name: 'Checkout GitHub Action'
-          uses: actions/checkout@main
-          
-        - name: 'Login via Azure CLI'
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-        - name: 'Build and push image'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
-            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
-    
-        - name: Deploy to Azure Container Apps
-          run: |
-            az containerapp update \
-              --name demo-app \
-              --resource-group ${{ secrets.RESOURCE_GROUP }} \
-              --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
-              --environment ${{ secrets.CONTAINER_APP_ENV }} \
-              --target-port 8080 \
-              --ingress external \
-              --registry-server planetscore.azurecr.io \
-              --min-replicas 0 \
-              --max-replicas 1
+  # Job 1: Build and Push Docker Image
+  build:
+    if: "!contains(github.event.head_commit.message, '[skip build]')" # Skips the build job if commit message includes [skip build]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v3
 
+      # Login via Azure CLI
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      # Login to Azure Container Registry
+      - name: 'Login to ACR'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # Build and Push Docker Image
+      - name: 'Build and Push Image'
+        run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
+
+  # Job 2: Deploy to Azure Container Apps
+  deploy:
+    needs: build
+    if: "!contains(github.event.head_commit.message, '[skip deploy]')" # Skips the deploy job if commit message includes [skip deploy]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v3
+
+      # Login via Azure CLI
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy to Azure Container Apps
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name demo-app \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
+            --min-replicas 0 \
+            --max-replicas 1
