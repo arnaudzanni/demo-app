@@ -1,5 +1,7 @@
 # local images
 public
+*.vscode 
+*.venv
 
 # Logs
 logs

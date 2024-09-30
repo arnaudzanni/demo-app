@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  hello-world-app:
+    image: hello-world-flask
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      ENV: azure
+      APP_FOLDER_PATH: /app
+      STORAGE_ACCOUNT_NAME: planetscoresa
+      FLASK_ENV: development
+      FLASK_APP: app.py
