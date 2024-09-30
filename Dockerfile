@@ -1,28 +1,20 @@
-# First stage: Build dependencies
-FROM node:8-alpine AS builder
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Set working directory
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm install
+# Copy the requirements.txt file into the container
+COPY requirements.txt ./
 
-# Copy the application code
-COPY . .
+# Install the required Python packages
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Second stage: Final runtime image
-FROM node:8-alpine
+# Copy the rest of the application code into the container
+COPY app.py ./
 
-# Set working directory
-WORKDIR /usr/src/app
-
-# Copy only the needed files from the builder stage
-COPY --from=builder /usr/src/app .
-
-# Install only production dependencies
-RUN npm install --only=production
-
-# Expose the port and set the entry point
+# Expose port 8080 for the Flask app
 EXPOSE 8080
-CMD ["npm", "start"]
+
+# Run the Flask app
+CMD ["python", "app.py"]
