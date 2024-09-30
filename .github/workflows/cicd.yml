@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Job 1: Build and Push Docker Image
-  build:
+  # Job 1: Build / Push Docker Image and Deploy to Azure Container App
+  build-and-deploy:
     if: "!contains(github.event.head_commit.message, '[skip build]')" # Skips the build job if commit message includes [skip build]
     runs-on: ubuntu-latest
     steps:
@@ -36,9 +36,23 @@ jobs:
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
 
+      # Deploy to Azure Container Apps
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp create \
+            --name demo-app \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
+            --target-port 8080 \
+            --ingress external \
+            --registry-server planetscore.azurecr.io \
+            --min-replicas 0 \
+            --max-replicas 1 \
+            --system-assigned
+
   # Job 2: Deploy to Azure Container Apps
-  deploy:
-    if: "!contains(github.event.head_commit.message, '[skip deploy]')" # Skips the deploy job if commit message includes [skip deploy]
+  deploy-only:
+    if: "contains(github.event.head_commit.message, '[skip build]')" # Skips the deploy job if commit message includes [skip deploy]
     runs-on: ubuntu-latest
     steps:
       # Checkout the repo
@@ -59,4 +73,4 @@ jobs:
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} \
             --min-replicas 0 \
-            --max-replicas 1
+            --max-replicas 1 

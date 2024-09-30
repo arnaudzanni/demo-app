@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy the requirements.txt file into the container
 COPY requirements.txt ./
@@ -15,6 +15,13 @@ COPY app.py ./
 
 # Expose port 8080 for the Flask app
 EXPOSE 8080
+
+# Set environment variable
+ENV ENV=azure
+ENV APP_FOLDER_PATH=/app
+ENV STORAGE_ACCOUNT_NAME=planetscoresa
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
 
 # Run the Flask app
 CMD ["python", "app.py"]
