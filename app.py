@@ -48,7 +48,7 @@ def hello_world():
         html_content = """
         <html>
             <body>
-                <h1>Hello, World! v2</h1>
+                <h1>Hello, World! v3 2025</h1>
                 <h2>Backend URL:</h2>
                 <p>{{ backend_url }}</p>
                 <p>{{ items }}</p>
