@@ -33,7 +33,7 @@ jobs:
       # Build and Push Docker Image
       - name: 'Build and Push Image'
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
+          docker build -f Dockerfile.frontend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/demo-app:${{ github.sha }}
       # Deploy to Azure Container Apps
       - name: Deploy to Azure Container Apps
