@@ -37,6 +37,7 @@ def hello_world():
     if environment == "azure":
         image_url = get_blob_url()
         error_message = ""
+        items="{}"
         try:
             response = requests.get(BACKEND_URL)
             response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
