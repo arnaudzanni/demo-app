@@ -52,7 +52,17 @@ def hello_world():
             file_share_message = f"File content: {file_content}"
         except Exception as e:
             file_share_message = f"Error: {str(e)}"
-        
+
+        # List files in the /app/data directory
+        try:
+            if files := os.listdir('/app/data'):
+                file_list = "\n".join(files)  # Join file names into a string with newlines
+                file_share_message_v2 = f"Files in /app/data:\n{file_list}"
+            else:
+                file_share_message_v2 = "No files found in /app/data."
+        except Exception as e:
+            file_share_message_v2 = f"Error: {str(e)}"
+
         html_content = """
         <html>
             <body>
@@ -63,6 +73,7 @@ def hello_world():
                 <p>{{ image_url }}</p>
                 <p>{{ images_folder_path }}</p>
                 <p>File Share message: {{ file_share_message }}</p>
+                <p>File Share message V2: {{ file_share_message_v2 }}</p>
                 <h2>Items from Backend:</h2>
                 {% if items %}
                     <ul>
@@ -85,6 +96,7 @@ def hello_world():
             error_message=error_message,
             images_folder_path=IMAGES_FOLDER_PATH,
             file_share_message=file_share_message,
+            file_share_message_v2=file_share_message_v2,
             image_url=image_url)
 
     else:
