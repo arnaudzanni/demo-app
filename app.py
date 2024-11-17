@@ -45,7 +45,14 @@ def hello_world():
         except Exception as e:
             # Catch any exceptions, including connectivity issues or bad responses
             error_message = f"Error while contacting backend: {str(e)}"
-
+        # Example: reading a file from the mounted volume (/app/data)
+        try:
+            with open('/app/data/test.txt', 'r') as file:
+                file_content = file.read()
+            file_share_message = f"File content: {file_content}"
+        except Exception as e:
+            file_share_message = f"Error: {str(e)}"
+        
         html_content = """
         <html>
             <body>
@@ -55,7 +62,7 @@ def hello_world():
                 <p>{{ items }}</p>
                 <p>{{ image_url }}</p>
                 <p>{{ images_folder_path }}</p>
-                
+                <p>File Share message: {{ file_share_message }}</p>
                 <h2>Items from Backend:</h2>
                 {% if items %}
                     <ul>
@@ -77,6 +84,7 @@ def hello_world():
             items=items,
             error_message=error_message,
             images_folder_path=IMAGES_FOLDER_PATH,
+            file_share_message=file_share_message,
             image_url=image_url)
 
     else:
