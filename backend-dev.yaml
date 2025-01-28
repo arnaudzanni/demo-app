@@ -1,0 +1,143 @@
+id: /subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourceGroups/planetscore/providers/Microsoft.App/containerapps/backend-dev
+identity:
+  principalId: 9fd98b30-c280-4c6a-a190-73e09ef5b281
+  tenantId: 8636a483-218b-4211-b731-f4cc011f4977
+  type: SystemAssigned
+location: France Central
+name: backend-dev
+properties:
+  configuration:
+    activeRevisionsMode: Single
+    dapr: null
+    identitySettings: []
+    ingress:
+      additionalPortMappings: null
+      allowInsecure: false
+      clientCertificateMode: null
+      corsPolicy: null
+      customDomains: null
+      exposedPort: 0
+      external: true
+      fqdn: backend-dev.greenwater-2276e1bb.francecentral.azurecontainerapps.io
+      ipSecurityRestrictions: null
+      stickySessions: null
+      targetPort: 8000
+      targetPortHttpScheme: null
+      traffic:
+      - latestRevision: true
+        weight: 100
+      transport: Auto
+    maxInactiveRevisions: 100
+    registries:
+    - identity: ''
+      passwordSecretRef: planetscoreazurecrio-planetscore
+      server: planetscore.azurecr.io
+      username: planetscore
+    runtime: null
+    secrets:
+    - name: planetscoreazurecrio-planetscore
+    service: null
+  customDomainVerificationId: BC1873A4B0A26257CFA51A2AD02719252719E1E0D34732A4572F50A7E971B92D
+  delegatedIdentities: []
+  environmentId: /subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourceGroups/planetscore/providers/Microsoft.App/managedEnvironments/planetscore-containerapp-env
+  eventStreamEndpoint: https://francecentral.azurecontainerapps.dev/subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourceGroups/planetscore/containerApps/backend-dev/eventstream
+  latestReadyRevisionName: backend-dev--0000001
+  latestRevisionFqdn: backend-dev--0000002.greenwater-2276e1bb.francecentral.azurecontainerapps.io
+  latestRevisionName: backend-dev--0000002
+  managedEnvironmentId: /subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourceGroups/planetscore/providers/Microsoft.App/managedEnvironments/planetscore-containerapp-env
+  outboundIpAddresses:
+  - 20.74.16.183
+  - 20.74.94.128
+  - 20.74.94.150
+  - 20.74.93.40
+  - 98.66.249.192
+  - 98.66.250.10
+  - 98.66.248.181
+  - 98.66.249.135
+  - 98.66.248.214
+  - 98.66.250.141
+  - 20.216.216.188
+  - 20.216.216.219
+  - 20.216.217.5
+  - 20.216.216.182
+  - 98.66.242.126
+  - 98.66.242.144
+  - 98.66.242.209
+  - 98.66.242.230
+  - 98.66.242.239
+  - 98.66.242.232
+  - 4.176.1.39
+  - 4.176.1.11
+  - 51.138.196.192
+  - 51.138.196.150
+  - 51.138.195.246
+  - 51.138.196.195
+  - 51.138.196.134
+  - 51.138.196.59
+  - 51.138.196.133
+  - 51.138.195.236
+  - 51.138.196.83
+  - 51.138.196.159
+  - 4.176.1.58
+  - 4.176.1.106
+  - 20.19.129.224
+  - 20.19.129.226
+  - 20.19.129.104
+  - 20.19.129.211
+  - 20.19.129.138
+  - 20.19.129.212
+  - 4.211.64.114
+  patchingMode: Automatic
+  provisioningState: Succeeded
+  runningStatus: Running
+  template:
+    containers:
+    - env:
+      - name: PLANETSCORE_HOME_DATA
+        value: /app/data/data
+      - name: AZURE_POSTGRESQL_HOST
+        value: planetscore-db-dev.postgres.database.azure.com
+      - name: AZURE_POSTGRESQL_DATABASE
+        value: DB
+      - name: AZURE_POSTGRESQL_USERNAME
+        value: demoadmin
+      - name: AZURE_POSTGRESQL_PASSWORD
+        value: demoadmin
+      - name: RUNNING_IN_PRODUCTION
+        value: '1'
+      image: planetscore.azurecr.io/backend:dev
+      imageType: ContainerImage
+      name: backend-dev
+      resources:
+        cpu: 0.5
+        ephemeralStorage: 2Gi
+        memory: 1Gi
+      volumeMounts:
+      - mountPath: /app/data
+        volumeName: azure-files-volume
+    initContainers: null
+    revisionSuffix: ''
+    scale:
+      maxReplicas: 2
+      minReplicas: 0
+      rules:
+      - http:
+          metadata:
+            concurrentRequests: '10'
+        name: http-scaler
+    serviceBinds: null
+    terminationGracePeriodSeconds: null
+    volumes:
+    - name: azure-files-volume
+      storageName: planetscorestorage-dev
+      storageType: AzureFile
+  workloadProfileName: Consumption
+resourceGroup: planetscore
+systemData:
+  createdAt: '2024-10-04T07:36:37.8545869'
+  createdBy: zanni.arnaud@gmail.com
+  createdByType: User
+  lastModifiedAt: '2024-11-17T15:22:38.2611911'
+  lastModifiedBy: zanni.arnaud@gmail.com
+  lastModifiedByType: User
+type: Microsoft.App/containerApps

@@ -1,0 +1,61 @@
+identity:
+  userAssignedIdentities:
+    "/subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourcegroups/my-container-apps-group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity": {}
+  type: UserAssigned
+properties:
+  environmentId: "/subscriptions/<subscription_id>/resourceGroups/rg/providers/Microsoft.App/managedEnvironments/demokube"
+  workloadProfileName: My-GP-01
+  configuration:
+    activeRevisionsMode: Single
+    dapr: null
+    identitySettings: []
+    ingress:
+      additionalPortMappings: null
+      allowInsecure: false
+      clientCertificateMode: null
+      corsPolicy: null
+      customDomains: null
+      exposedPort: 8000
+      external: true
+      fqdn: my-container-app.purplecliff-4f3754d5.canadacentral.azurecontainerapps.io
+      ipSecurityRestrictions: null
+      stickySessions: null
+      targetPort: 80
+      targetPortHttpScheme: null
+      traffic:
+      - latestRevision: true
+        weight: 100
+      transport: Auto
+    maxInactiveRevisions: 2
+    registries: null
+    runtime: null
+    secrets: null
+    service: null
+    targetLabel: ''
+  template:
+    containers:
+    - image: nginx
+      imageType: ContainerImage
+      name: my-container-app
+      resources:
+        cpu: 0.5
+        ephemeralStorage: 2Gi
+        memory: 1Gi
+      volumeMounts:
+      - mountPath: "/app/data"
+        volumeName: azure-files-volume
+    initContainers: null
+    revisionSuffix: ''
+    scale:
+      minReplicas: 1
+      maxReplicas: 2
+      rules: null
+    serviceBinds: null
+    terminationGracePeriodSeconds: null
+    volumes:
+    - name: azure-files-volume
+      storageType: AzureFile
+      storageName: myazurefiles
+  workloadProfileName: Consumption
+resourceGroup: my-container-apps-group
+type: Microsoft.App/containerApps

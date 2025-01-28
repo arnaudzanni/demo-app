@@ -1,0 +1,71 @@
+id: /subscriptions/7f628226-29c8-4404-b5e8-67e50ef62ff5/resourceGroups/my-container-apps-group/providers/Microsoft.App/containerapps/my-container-app
+identity:
+  principalId: 674b1d9f-7408-471d-881b-d84fa3b17627
+  tenantId: 8636a483-218b-4211-b731-f4cc011f4977
+  type: SystemAssigned
+location: Canada Central
+name: my-container-app
+properties:
+  configuration:
+    activeRevisionsMode: Single
+    dapr: null
+    identitySettings: []
+    ingress:
+      additionalPortMappings: null
+      allowInsecure: false
+      clientCertificateMode: null
+      corsPolicy: null
+      customDomains: null
+      exposedPort: 0
+      external: true
+      fqdn: my-container-app.purplecliff-4f3754d5.canadacentral.azurecontainerapps.io
+      ipSecurityRestrictions: null
+      stickySessions: null
+      targetPort: 80
+      targetPortHttpScheme: null
+      traffic:
+      - latestRevision: true
+        weight: 100
+      transport: Auto
+    maxInactiveRevisions: 100
+    registries: null
+    runtime: null
+    secrets: null
+    service: null
+    targetLabel: ''
+  template:
+    containers:
+    - image: nginx
+      imageType: ContainerImage
+      name: my-container-app
+      resources:
+        cpu: 0.5
+        ephemeralStorage: 2Gi
+        memory: 1Gi
+      volumeMounts:
+      - mountPath: /app/data
+        volumeName: azure-files-volume
+    initContainers: null
+    revisionSuffix: ''
+    scale:
+      cooldownPeriod: 300
+      maxReplicas: 1
+      minReplicas: 1
+      pollingInterval: 30
+      rules: null
+    serviceBinds: null
+    terminationGracePeriodSeconds: null
+    volumes:
+    - name: azure-files-volume
+      storageName: mystoragemount
+      storageType: AzureFile
+  workloadProfileName: Consumption
+resourceGroup: my-container-apps-group
+systemData:
+  createdAt: '2024-11-24T15:09:20.298597'
+  createdBy: zanni.arnaud@gmail.com
+  createdByType: User
+  lastModifiedAt: '2024-11-24T15:09:20.298597'
+  lastModifiedBy: zanni.arnaud@gmail.com
+  lastModifiedByType: User
+type: Microsoft.App/containerApps
